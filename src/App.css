@@ -1,0 +1,54 @@
+@import url("https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;700&display=swap");
+
+body {
+}
+
+.App {
+  background-image: url("./assets/background.svg");
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+}
+
+.splash {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.buttonWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  height: 100vh;
+  background: transparent;
+}
+
+.authButton {
+  margin-top: 50px;
+  font-family: "Barlow", sans-serif !important;
+  font-weight: 700;
+  font-size: 24px;
+  padding: 20px 40px 20px 40px;
+  background: transparent;
+  border-radius: 40px;
+  border: 3px solid #666;
+  color: #666;
+  transition-property: color, border;
+  transition-duration: 1s;
+  transition-timing-function: cubic-bezier(0.075, 0.82, 0.165, 1);
+  cursor: pointer;
+}
+
+.authButton:hover {
+  border: 3px solid #000000;
+  color: #000;
+}
+
+.authButton:active {
+  border: 3px solid #6572e4;
+  background: #6572e4;
+  color: #fff;
+}
