@@ -5,7 +5,7 @@ export default function LoginSignup({active, setActive}: {active: boolean, setAc
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [loginNotSignup, setLoginNotSignup] = useState(true);
+  const [loginNotSignup, setLoginNotSignup] = useState(false);
 
 
   const handleModalChange = useCallback(() => setActive(!active), [active]);

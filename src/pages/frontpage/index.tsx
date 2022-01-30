@@ -124,51 +124,48 @@ const Feature = ({ flip, textHeader, textBody, image }: FeatureProps) => {
 
 function Frontpage() {
   return (
-    <div>
-        <Layout sectioned={true}>
-            <TopBarWrapper>
-                <Topbar />
-            </TopBarWrapper>
-                <Banner>
-                    <Stack alignment="center" distribution="leading">
-                        <WhiteText>
-                            <BannerHeader>See. Know. Secure.</BannerHeader>
-                            <BannerSubheader>
-                                <MaxWidthContainer maxWidth="600px">
-                                    Monitor every asset and detect vulnerabilities and threats.
-                                </MaxWidthContainer>
-                            </BannerSubheader>
-                            <BannerSubheader>
-                                Seamlessly.
-                            </BannerSubheader>
-                        </WhiteText>
-                    </Stack>
-                </Banner>
-            <Layout.Section>
-                <Stack vertical alignment="center">
-                    <DisplayText size="extraLarge">Our Features</DisplayText>
-                    <Feature
-                        textBody="Protect your devices by scanning for vulnerabilities regularly and automatically patch them."
-                        textHeader="Vulnerability 
-                        Scanner"
-                        image={vulnImage}
-                    ></Feature>
-                    <Feature
-                        flip
-                        textBody="Monitor device utilization and be notified when something is off."
-                        textHeader="Fleet Reporting"
-                        image={fleetImage}
-                    ></Feature>
-                    <Feature
-                        textBody="Manage your fleet with ease, and automatically patch vulnerabilities when found."
-                        textHeader="Orchestration &amp; Automation"
-                        image={orchImage}
-                    ></Feature>
+    <Layout sectioned={true}>
+        <TopBarWrapper>
+            <Topbar />
+        </TopBarWrapper>
+            <Banner>
+                <Stack alignment="center" distribution="leading">
+                    <WhiteText>
+                        <BannerHeader>See. Know. Secure.</BannerHeader>
+                        <BannerSubheader>
+                            <MaxWidthContainer maxWidth="600px">
+                                Monitor every asset and detect vulnerabilities and threats.
+                            </MaxWidthContainer>
+                        </BannerSubheader>
+                        <BannerSubheader>
+                            Seamlessly.
+                        </BannerSubheader>
+                    </WhiteText>
                 </Stack>
-            </Layout.Section>
-            </Layout>
-      
-    </div>
+            </Banner>
+        <Layout.Section>
+            <Stack vertical alignment="center">
+                <DisplayText size="extraLarge">Our Features</DisplayText>
+                <Feature
+                    textBody="Protect your devices by scanning for vulnerabilities regularly and automatically patch them."
+                    textHeader="Vulnerability 
+                    Scanner"
+                    image={vulnImage}
+                ></Feature>
+                <Feature
+                    flip
+                    textBody="Monitor device utilization and be notified when something is off."
+                    textHeader="Fleet Reporting"
+                    image={fleetImage}
+                ></Feature>
+                <Feature
+                    textBody="Manage your fleet with ease, and automatically patch vulnerabilities when found."
+                    textHeader="Orchestration &amp; Automation"
+                    image={orchImage}
+                ></Feature>
+            </Stack>
+        </Layout.Section>
+    </Layout>
   );
 }
 
