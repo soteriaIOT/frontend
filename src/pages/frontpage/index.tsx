@@ -3,20 +3,10 @@ import React, { useState, useCallback, useEffect } from "react";
 import styled from "styled-components";
 
 import {
-  Frame,
-  Page,
-  Card,
-  ResourceList,
-  ResourceItem,
-  TextStyle,
-  Avatar,
-  TextField,
-  Filters,
-  Button,
-  ResourceListSelectedItems,
-  Tooltip,
-  Stack,
-  Heading,
+    Layout,
+    Stack,
+    DisplayText,
+    TextContainer
 } from "@shopify/polaris";
 import Topbar from "../../components/topbar";
 
@@ -36,29 +26,54 @@ const Banner = styled.div`
   background-size: cover;
   display: flex;
   padding-left: 200px;
+  .Polaris-Stack {
+    width: 70%;
+    margin: auto;
+  }
 `;
 
-const BannerTextWrapper = styled.div`
+const WhiteText = styled.div`
   color: #fff;
-  font-weight: 700;
-  max-width: 720px;
-  padding-top: 100px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
 `;
 
-const Features = styled.div`
-  display: flex;
-  flex-direction: column;
-  text-align: center;
-  color: #3f3d56;
-  font-size: 48px;
-  font-weight: 700;
-  line-height: 64px;
-  padding: 30px 0 30px 0;
-  padding-bottom: 100px;
-`;
+const BannerHeader = styled.h1`
+font-size: max(min(5vw, 60px), 72px);
+font-weight: 700;
+line-hight: max(min(5vw, 60px), 72px);;
+padding-bottom: max(5vw, 20px);
+`
+
+const BannerSubheader = styled.h2`
+font-size: max(min(3vw, 30px), 36px);
+font-weight: 700;
+line-height: max(min(3vw, 30px), 36px);
+padding-bottom: 20px
+`
+
+const PurpleText = styled.div`
+display: block;
+color: #6C63FF
+`
+
+interface MaxWidthContainerProps {
+    readonly maxWidth?: string;
+}
+
+const MaxWidthContainer = styled.div<MaxWidthContainerProps>`
+max-width: ${props => props.maxWidth ? props.maxWidth: "300px"}
+`
+
+interface FeatureStackProps {
+    readonly flip?: boolean;
+}
+
+const FeatureStack = styled.div<FeatureStackProps>`
+margin-top: 100px;
+.Polaris-Stack {
+    max-width: 820px;
+    flex-direction: ${props => props.flip ? "row-reverse": "row"}
+}
+`
 
 type FeatureProps = {
   flip?: boolean;
@@ -74,128 +89,85 @@ type FeatureTextProps = {
 
 const FeatureText = ({ textHeader, textBody }: FeatureTextProps) => {
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        height: "100%",
-      }}
-    >
-      <span
-        style={{
-          fontSize: "42px",
-          lineHeight: "42px",
-          color: "#6C63FF",
-          marginBottom: "20px",
-        }}
-      >
-        {textHeader}
-      </span>
-      <span
-        style={{
-          fontWeight: "normal",
-          fontSize: "18px",
-          lineHeight: "18px",
-          color: "#494949",
-        }}
-      >
-        {textBody}
-      </span>
-    </div>
+    <MaxWidthContainer maxWidth="330px">
+        <Stack vertical alignment="center" distribution="center" spacing="loose">
+            <TextContainer>
+                <DisplayText size="extraLarge" element="h1">
+                        <PurpleText>{textHeader}</PurpleText>
+                </DisplayText>
+                <DisplayText size="small">
+                    {textBody}
+                </DisplayText>
+            </TextContainer>
+        </Stack>
+    </MaxWidthContainer>
   );
 };
 
-const FeatureImage = ({ image }: { image: string }) => {
-  return <img style={{ maxWidth: "400px" }} src={image} />;
-};
+const FeatureImage = styled.img`
+max-width: 400px;
+flex-grow: 1;
+margin-left: 20px;
+`
 
 const Feature = ({ flip, textHeader, textBody, image }: FeatureProps) => {
   return (
-    <div
-      style={{
-        marginTop: "100px",
-        width: "100%",
-        display: "flex",
-        justifyContent: "center",
-      }}
-    >
-      <div style={{ maxWidth: "800px", display: "flex" }}>
-        <div style={{ flexGrow: 1, marginRight: "20px" }}>
-          {flip ? (
-            <FeatureImage image={image} />
-          ) : (
+    <FeatureStack flip={flip}>
+        <Stack alignment="center" distribution="center" spacing="extraLoose">
             <FeatureText textHeader={textHeader} textBody={textBody} />
-          )}
-        </div>
-        <div style={{ flexGrow: 1, marginLeft: "20px" }}>
-          {flip ? (
-            <FeatureText textHeader={textHeader} textBody={textBody} />
-          ) : (
-            <FeatureImage image={image} />
-          )}
-        </div>
-      </div>
-    </div>
+            <FeatureImage src={image} />
+        </Stack>
+    </FeatureStack>
   );
 };
+
 
 function Frontpage() {
   return (
     <div>
-      <TopBarWrapper>
-        <Topbar />
-      </TopBarWrapper>
-      <Banner>
-        <BannerTextWrapper>
-          <div
-            style={{
-              fontSize: "70px",
-              lineHeight: "70px",
-              paddingBottom: "50px",
-            }}
-          >
-            See. Know. Secure.
-          </div>
-          <div
-            style={{
-              fontSize: "36px",
-              lineHeight: "36px",
-              paddingBottom: "20px",
-            }}
-          >
-            Monitor every asset and detect vulnerability and threats.
-          </div>
-          <div
-            style={{
-              fontSize: "36px",
-              lineHeight: "36px",
-              paddingBottom: "20px",
-            }}
-          >
-            Seamlessly.
-          </div>
-        </BannerTextWrapper>
-      </Banner>
-      <Features>
-        Our Features
-        <Feature
-          textBody="Protect your devices by scanning for vulnerabilities regularly and automatically patch them."
-          textHeader="Vulnerability Scanner"
-          image={vulnImage}
-        ></Feature>
-        <Feature
-          flip
-          textBody="Monitor device utilization and be notified when something is off."
-          textHeader="Fleet Reporting"
-          image={fleetImage}
-        ></Feature>
-        <Feature
-          textBody="Manage your fleet with ease, and automatically patch vulnerabilities when found."
-          textHeader="Orchestration & Automation"
-          image={orchImage}
-        ></Feature>
-      </Features>
+        <Layout sectioned={true}>
+            <TopBarWrapper>
+                <Topbar />
+            </TopBarWrapper>
+                <Banner>
+                    <Stack alignment="center" distribution="leading">
+                        <WhiteText>
+                            <BannerHeader>See. Know. Secure.</BannerHeader>
+                            <BannerSubheader>
+                                <MaxWidthContainer maxWidth="600px">
+                                    Monitor every asset and detect vulnerabilities and threats.
+                                </MaxWidthContainer>
+                            </BannerSubheader>
+                            <BannerSubheader>
+                                Seamlessly.
+                            </BannerSubheader>
+                        </WhiteText>
+                    </Stack>
+                </Banner>
+            <Layout.Section>
+                <Stack vertical alignment="center">
+                    <DisplayText size="extraLarge">Our Features</DisplayText>
+                    <Feature
+                        textBody="Protect your devices by scanning for vulnerabilities regularly and automatically patch them."
+                        textHeader="Vulnerability 
+                        Scanner"
+                        image={vulnImage}
+                    ></Feature>
+                    <Feature
+                        flip
+                        textBody="Monitor device utilization and be notified when something is off."
+                        textHeader="Fleet Reporting"
+                        image={fleetImage}
+                    ></Feature>
+                    <Feature
+                        textBody="Manage your fleet with ease, and automatically patch vulnerabilities when found."
+                        textHeader="Orchestration &amp; Automation"
+                        image={orchImage}
+                    ></Feature>
+                </Stack>
+            </Layout.Section>
+            </Layout>
+      
     </div>
   );
 }
