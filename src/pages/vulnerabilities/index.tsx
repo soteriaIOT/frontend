@@ -2,13 +2,13 @@ import React, {useState, useCallback, useEffect} from 'react';
 
 import styled from 'styled-components'
 
-import {Frame, Page, Card, ResourceList, ResourceItem, TextStyle, Avatar, TextField, Filters, Button, ResourceListSelectedItems, Tooltip, Stack} from '@shopify/polaris';
+import {Page, Card, ResourceList, ResourceItem, TextStyle, Select, Filters, ResourceListSelectedItems, Tooltip, Stack} from '@shopify/polaris';
 import {Icon} from '@shopify/polaris';
 import {CircleAlertMajor, InfoMinor} from '@shopify/polaris-icons';
 
 
 
-import Sidebar from '../../components/sidebar/index';
+import NavigationFrame from '../../components/frame';
 
 enum Priority {
     High=1,
@@ -37,7 +37,7 @@ text-overflow: ellipsis;
 `
 
 interface VulnerabilityItem {
-    id: number;
+    id: string;
     url: string;
     name: string;
     description: string;
@@ -50,12 +50,13 @@ interface VulnerabilityItem {
 function Vulnerabilities() {
     const [selectedItems, setSelectedItems] = useState<ResourceListSelectedItems>([]);
     const [sortValue, setSortValue] = useState('PRIORITY_ASC');
-    const [taggedWith, setTaggedWith] = useState('High');
+    const [taggedWith, setTaggedWith] = useState('');
     const [queryValue, setQueryValue] = useState('');
+    const [filteredItems, setFilteredItems] = useState<VulnerabilityItem[]>([]);
 
     const [items, setItems] = useState([
         {
-            id: 1,
+            id: "1",
             url: "https://github.com/advisories/GHSA-c36v-fmgq-m8hx",
             name: "CVE-2021-3757",
             description: "immer is vulnerable to Improperly Controlled Modification of Object Prototype Attributes ('Prototype Pollution')",
@@ -64,7 +65,7 @@ function Vulnerabilities() {
             devicesAffected: 26,
           },
           {
-            id: 12122,
+            id: "12122",
             url: "https://github.com/advisories/GHSA-c36v-fmgq-m8hx",
             name: "CVE-2021-3754",
             description: "immer is vulnerable to Improperly Controlled Modification of Object Prototype Attributes ('Prototype Pollution')",
@@ -82,6 +83,41 @@ function Vulnerabilities() {
       (value) => setQueryValue(value),
       [],
     );
+
+    useEffect(() => {
+      let filteredItems = items.filter(item => {
+          if (queryValue) {
+              return item.name.toLowerCase().includes(queryValue.toLowerCase());
+          }
+          return true;
+      });
+      
+      if (taggedWith) {
+        filteredItems = filteredItems.filter(item => {
+            switch(taggedWith) {
+                case 'High': return item.priority === Priority.High;
+                case 'Medium': return item.priority === Priority.Medium;
+                case 'Low': return item.priority === Priority.Low;
+                default: return "true";
+            }
+          });
+      }
+
+      let key = "priority" as keyof VulnerabilityItem;
+      if(sortValue.startsWith("PRIORITY")){
+          key = "priority" as keyof VulnerabilityItem;
+      }
+      let direction = 1
+      if(sortValue.endsWith("DESC")){
+          direction = -1;
+      }
+      const sorted = [...filteredItems].sort((a, b) => {
+          return a[key] > b[key] ? 1 * direction : -1 * direction;
+      });
+
+      setFilteredItems(sorted);
+  }, [queryValue, taggedWith, sortValue, setFilteredItems])
+
     const handleTaggedWithRemove = useCallback(() => setTaggedWith(''), []);
     const handleQueryValueRemove = useCallback(() => setQueryValue(''), []);
     const handleClearAll = useCallback(() => {
@@ -93,43 +129,18 @@ function Vulnerabilities() {
       singular: 'vulnerability',
       plural: 'vulnerabilities',
     };
-
-    useEffect(() => {
-        let key = "priority" as keyof VulnerabilityItem;
-        if(sortValue.startsWith("PRIORITY")){
-            key = "priority" as keyof VulnerabilityItem;
-        }
-        let direction = 1
-        if(sortValue.endsWith("DESC")){
-            direction = -1;
-        }
-        const sorted = [...items].sort((a, b) => {
-            return a[key] > b[key] ? 1 * direction : -1 * direction;
-        });
-
-        setItems(sorted);
-    }, [sortValue, setItems])
   
     const promotedBulkActions = [
       {
-        content: 'Edit customers',
-        onAction: () => console.log('Todo: implement bulk edit'),
+        content: 'Patch vulnerabilities',
+        onAction: () => console.log('Todo: implement patch vulnerabilities'),
       },
-    ];
-  
-    const bulkActions = [
-      {
-        content: 'Add tags',
-        onAction: () => console.log('Todo: implement bulk add tags'),
-      },
-      {
-        content: 'Remove tags',
-        onAction: () => console.log('Todo: implement bulk remove tags'),
-      },
-      {
-        content: 'Delete customers',
-        onAction: () => console.log('Todo: implement bulk delete'),
-      },
+    ]
+
+    const options = [
+      {label: 'High', value:'High'},
+      {label: 'Medium', value: 'Medium'},
+      {label: 'Low', value: 'Low'},
     ];
   
     const filters = [
@@ -137,12 +148,11 @@ function Vulnerabilities() {
         key: 'taggedWith3',
         label: 'Tagged with',
         filter: (
-          <TextField
-            label="Tagged with"
-            value={taggedWith}
+          <Select
+            label="Priority"
+            options={options}
             onChange={handleTaggedWithChange}
-            autoComplete="off"
-            labelHidden
+            value={taggedWith}
           />
         ),
         shortcut: true,
@@ -168,39 +178,37 @@ function Vulnerabilities() {
         onQueryClear={handleQueryValueRemove}
         onClearAll={handleClearAll}
       >
-        <div style={{paddingLeft: '8px'}}>
-          <Button onClick={() => console.log('New filter saved')}>Save</Button>
-        </div>
       </Filters>
     );
-  
+
     return (
-    <Frame navigation={<Sidebar />}>
+    <NavigationFrame>
         <Page title="Vulnerabilties">
         
         <Card>
             <ResourceList
-            resourceName={resourceName}
-            items={items}
-            renderItem={renderItem}
-            selectedItems={selectedItems}
-            onSelectionChange={(v) => setSelectedItems(v as ResourceListSelectedItems)}
-            promotedBulkActions={promotedBulkActions}
-            bulkActions={bulkActions}
-            sortValue={sortValue}
-            sortOptions={[
-                {label: 'Highest Priority', value: 'PRIORITY_ASC'},
-                {label: 'Lowest Priority', value: 'PRIORITY_DESC'},
-            ]}
-            onSortChange={(selected) => {
-                setSortValue(selected);
-                console.log(selected);
-            }}
-            filterControl={filterControl}
+              resourceName={resourceName}
+              items={filteredItems}
+              isFiltered={filteredItems.length != items.length}
+              renderItem={renderItem}
+              selectedItems={selectedItems}
+              onSelectionChange={(v) => setSelectedItems(v as ResourceListSelectedItems)}
+              promotedBulkActions={promotedBulkActions}
+              sortValue={sortValue}
+              sortOptions={[
+                  {label: 'Highest Priority', value: 'PRIORITY_ASC'},
+                  {label: 'Lowest Priority', value: 'PRIORITY_DESC'},
+              ]}
+              onSortChange={(selected) => {
+                  setSortValue(selected);
+                  console.log(selected);
+              }}
+              filterControl={filterControl}
+              resolveItemId={resolveItemIds}
             />
         </Card>
         </Page>
-    </Frame>
+    </NavigationFrame>
         
       
     );
@@ -208,17 +216,18 @@ function Vulnerabilities() {
     function renderItem(item: VulnerabilityItem) {
       const {id, url, name, description, priority, devicesAffected, patchAvailable} = item;
       const media = <Icon source={CircleAlertMajor} color={priority == Priority.High ? "critical" : (priority == Priority.Medium ? "warning" : "success")} backdrop/>;
-    // const media = <Avatar initials={String(id)}/>
       return (
         <ResourceItem
           id={String(id)}
           url={url}
+          external={true}
           media={media}
           accessibilityLabel={`View details for ${name}`}
           persistActions
+          verticalAlignment="center"
         >
             <Stack distribution="fillEvenly" spacing="extraLoose">
-                <div>
+              <Stack.Item fill>
                     <CVEHeading>
                         <TextStyle variation="strong">{name}</TextStyle>
                         <Icon source={InfoMinor} color="subdued" />
@@ -228,18 +237,16 @@ function Vulnerabilities() {
                             <TextStyle variation="subdued">{description}</TextStyle>
                         </Tooltip>
                     </CVESubtext>
-                </div>
-                <div>
-                    <Stack distribution="fill" spacing="extraLoose">
-                    <div>
-                        {devicesAffected} device(s)
-                    </div>
-                    <div>
-                        {patchAvailable ? "Patch Available" : "No Patch Available"}
-                    </div>
-                    </Stack>
-                </div>
-                
+              </Stack.Item>
+              <Stack distribution="fill" spacing="extraLoose" alignment="center">
+                <Stack.Item>
+                    {devicesAffected} device(s)
+                </Stack.Item>
+                <Stack.Item>
+                    {patchAvailable ? "Patch Available" : "No Patch Available"}
+                </Stack.Item>
+              </Stack>
+            
             </Stack>
             
            
@@ -254,6 +261,10 @@ function Vulnerabilities() {
         default:
           return value;
       }
+    }
+
+    function resolveItemIds({id}: VulnerabilityItem) {
+      return String(id);
     }
   
     function isEmpty(value: string | Array<any>) {
