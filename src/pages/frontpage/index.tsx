@@ -6,9 +6,10 @@ import {
     Layout,
     Stack,
     DisplayText,
-    TextContainer
+    TextContainer,
 } from "@shopify/polaris";
 import Topbar from "../../components/topbar";
+import Footer from "../../components/footer";
 
 import bannerImage from "../../assets/banner.png";
 import vulnImage from "../../assets/vuln.png";
@@ -22,14 +23,15 @@ const TopBarWrapper = styled.div`
 
 const Banner = styled.div`
   background-image: url(${bannerImage});
-  height: 700px;
+  height: 90vh;
   background-size: cover;
   display: flex;
-  padding-left: 200px;
+  padding-left: 4vh;
   .Polaris-Stack {
-    width: 70%;
+    width: 80%;
     margin: auto;
   }
+  margin-bottom: 10vh;
 `;
 
 const WhiteText = styled.div`
@@ -128,21 +130,21 @@ function Frontpage() {
         <TopBarWrapper>
             <Topbar />
         </TopBarWrapper>
-            <Banner>
-                <Stack alignment="center" distribution="leading">
-                    <WhiteText>
-                        <BannerHeader>See. Know. Secure.</BannerHeader>
-                        <BannerSubheader>
-                            <MaxWidthContainer maxWidth="600px">
-                                Monitor every asset and detect vulnerabilities and threats.
-                            </MaxWidthContainer>
-                        </BannerSubheader>
-                        <BannerSubheader>
-                            Seamlessly.
-                        </BannerSubheader>
-                    </WhiteText>
-                </Stack>
-            </Banner>
+        <Banner>
+            <Stack alignment="center" distribution="leading">
+                <WhiteText>
+                    <BannerHeader>See. Know. Secure.</BannerHeader>
+                    <BannerSubheader>
+                        <MaxWidthContainer maxWidth="600px">
+                            Monitor every asset and detect vulnerabilities and threats.
+                        </MaxWidthContainer>
+                    </BannerSubheader>
+                    <BannerSubheader>
+                        Seamlessly.
+                    </BannerSubheader>
+                </WhiteText>
+            </Stack>
+        </Banner>
         <Layout.Section>
             <Stack vertical alignment="center">
                 <DisplayText size="extraLarge">Our Features</DisplayText>
@@ -165,6 +167,7 @@ function Frontpage() {
                 ></Feature>
             </Stack>
         </Layout.Section>
+        <Footer />
     </Layout>
   );
 }

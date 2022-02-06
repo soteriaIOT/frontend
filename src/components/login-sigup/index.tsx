@@ -1,11 +1,14 @@
 import React, {useCallback, useState} from 'react';
-import {Button, ChoiceList, Modal, Stack, TextField, Form, FormLayout} from '@shopify/polaris';
+import { useNavigate } from "react-router-dom";
+import {Modal, Stack, TextField, Form, ThemeProvider} from '@shopify/polaris';
 
 export default function LoginSignup({active, setActive}: {active: boolean, setActive: (value: boolean) => void}) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loginNotSignup, setLoginNotSignup] = useState(false);
+
+  const navigate = useNavigate();
 
 
   const handleModalChange = useCallback(() => setActive(!active), [active]);
@@ -22,6 +25,7 @@ export default function LoginSignup({active, setActive}: {active: boolean, setAc
     setName('');
     setPassword('');
     handleModalChange();
+    navigate("/dashboard")
   }, []);
 
 
