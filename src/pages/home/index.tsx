@@ -2,17 +2,16 @@ import React, {useState, useCallback, useEffect} from 'react';
 
 import styled from 'styled-components'
 
-import {Frame, Page, Card, ResourceList, ResourceItem, TextStyle, Avatar, TextField, Filters, Button, ResourceListSelectedItems, Tooltip, Stack} from '@shopify/polaris';
+import {Page} from '@shopify/polaris';
 
 
-import Sidebar from '../../components/sidebar/index';
-import LoginSignup from '../../components/login-sigup/index';
+import NavigationFrame from '../../components/frame';
 
 
 function Home() {
-    return <Frame navigation={<Sidebar />}>
+    return <NavigationFrame>
         <Page title="Home"></Page>
-    </Frame>
+    </NavigationFrame>
   }
 
 export default Home;

@@ -2,33 +2,19 @@ import React, {useState, useCallback, useEffect} from 'react';
 
 import styled from 'styled-components'
 
-import {Frame, Page, Card, ResourceList, ResourceItem, TextStyle, Avatar, TextField, Filters, Button, ResourceListSelectedItems, Tooltip, Stack, FilterInterface, AppliedFilterInterface} from '@shopify/polaris';
+import {Page, Card, ResourceList, ResourceItem, TextStyle, Filters, ResourceListSelectedItems, Stack, FilterInterface, AppliedFilterInterface} from '@shopify/polaris';
 import {Icon} from '@shopify/polaris';
-import {CircleAlertMajor, InfoMinor} from '@shopify/polaris-icons';
+import {CircleAlertMajor} from '@shopify/polaris-icons';
 
 
 
-import Sidebar from '../../components/sidebar/index';
+import NavigationFrame from '../../components/frame';
 
 enum DeviceStatus {
     Normal=1,
     Warning=2,
     Error=3
 }
-
-const DVCHeading = styled(Stack)`
-.Polaris-Icon{
-    margin: 0;
-    margin-left: 1%;
-}
-`
-
-const DVCSubtext = styled.div`
-max-width: 40ch;
-white-space: nowrap;
-overflow: hidden !important;
-text-overflow: ellipsis;
-`
 
 interface DeviceItem {
     id: string;
@@ -41,7 +27,6 @@ interface DeviceItem {
 
 function Devices() {
     const [selectedItems, setSelectedItems] = useState<ResourceListSelectedItems>([]);
-    const [sortValue, setSortValue] = useState('PRIORITY_ASC');
     const [queryValue, setQueryValue] = useState('');
 
     const [filteredItems, setFilteredItems] = useState<DeviceItem[]>([]);
@@ -116,14 +101,11 @@ function Devices() {
         onQueryClear={handleQueryValueRemove}
         onClearAll={handleClearAll}
       >
-        <div style={{paddingLeft: '8px'}}>
-          <Button onClick={() => console.log('New filter saved')}>Save</Button>
-        </div>
       </Filters>
     );
   
     return (
-    <Frame navigation={<Sidebar />}>
+    <NavigationFrame>
         <Page title="Devices">
         <Card>
             <ResourceList
@@ -133,16 +115,11 @@ function Devices() {
             selectedItems={selectedItems}
             onSelectionChange={(v) => setSelectedItems(v as ResourceListSelectedItems)}
             promotedBulkActions={promotedBulkActions}
-            sortValue={sortValue}
-            onSortChange={(selected) => {
-                setSortValue(selected);
-                console.log(selected);
-            }}
             filterControl={filterControl}
             />
         </Card>
         </Page>
-    </Frame>
+    </NavigationFrame>
         
       
     );

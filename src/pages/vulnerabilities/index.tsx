@@ -2,13 +2,13 @@ import React, {useState, useCallback, useEffect} from 'react';
 
 import styled from 'styled-components'
 
-import {Frame, Page, Card, ResourceList, ResourceItem, TextStyle, Select, Filters, Button, ResourceListSelectedItems, Tooltip, Stack} from '@shopify/polaris';
+import {Page, Card, ResourceList, ResourceItem, TextStyle, Select, Filters, ResourceListSelectedItems, Tooltip, Stack} from '@shopify/polaris';
 import {Icon} from '@shopify/polaris';
 import {CircleAlertMajor, InfoMinor} from '@shopify/polaris-icons';
 
 
 
-import Sidebar from '../../components/sidebar/index';
+import NavigationFrame from '../../components/frame';
 
 enum Priority {
     High=1,
@@ -182,7 +182,7 @@ function Vulnerabilities() {
     );
 
     return (
-    <Frame navigation={<Sidebar />}>
+    <NavigationFrame>
         <Page title="Vulnerabilties">
         
         <Card>
@@ -208,7 +208,7 @@ function Vulnerabilities() {
             />
         </Card>
         </Page>
-    </Frame>
+    </NavigationFrame>
         
       
     );

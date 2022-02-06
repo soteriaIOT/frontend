@@ -1,7 +1,6 @@
 import React from 'react';
 
 import '@shopify/polaris/build/esm/styles.css';
-
 import {
   BrowserRouter,
   Routes,

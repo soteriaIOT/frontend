@@ -2,21 +2,21 @@ import React, {useState, useCallback, useEffect} from 'react';
 
 import styled from 'styled-components'
 
-import {Frame, Page} from '@shopify/polaris';
+import {Page} from '@shopify/polaris';
 
 
-import Sidebar from '../../components/sidebar/index';
 import Logout from '../../components/logout/index';
+import NavigationFrame from '../../components/frame/index';
 
 
 function Settings() {
-  
-    return (
-    <Frame navigation={<Sidebar />}>
+
+  return (
+    <NavigationFrame>
         <Page title="Settings">
           <Logout />
         </Page>
-    </Frame>
+    </NavigationFrame>
     );
   
   }

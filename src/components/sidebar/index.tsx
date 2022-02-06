@@ -10,6 +10,7 @@ const FullHeight = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    padding-top: 5vh;
 `;
 
 function Sidebar() {

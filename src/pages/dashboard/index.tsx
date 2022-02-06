@@ -7,7 +7,7 @@ import {Frame, Page} from '@shopify/polaris';
 import { useParams } from 'react-router';
 
 
-import Sidebar from '../../components/sidebar/index';
+import NavigationFrame from '../../components/frame';
 
 
 function Dashboard() {
@@ -15,11 +15,11 @@ function Dashboard() {
   const { device_id } = useParams();
     
     return (
-    <Frame navigation={<Sidebar />}>
+    <NavigationFrame>
         <Page title="Dashboard">
             <h1>{device_id && device_id}</h1>
         </Page>
-    </Frame>
+    </NavigationFrame>
     );
   
   }
