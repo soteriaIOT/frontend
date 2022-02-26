@@ -1,5 +1,4 @@
 import React, {useState, useCallback, useEffect} from 'react';
-import { gql, useQuery } from '@apollo/client'
 
 import styled from 'styled-components'
 
