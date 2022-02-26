@@ -1,11 +1,22 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { ApolloClient, InMemoryCache, ApolloProvider, HttpLink } from "@apollo/client";
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
+const API_URL = "https://soteriaiot-api.herokuapp.com/query"
+const client = new ApolloClient({
+  link: new HttpLink({
+    uri: API_URL,
+  }),
+  cache: new InMemoryCache()
+});
+
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <ApolloProvider client={client}>
+      <App />
+    </ApolloProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );
