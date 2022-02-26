@@ -1,4 +1,5 @@
 import React, {useState, useCallback, useEffect} from 'react';
+import { gql, useQuery } from '@apollo/client'
 
 import styled from 'styled-components'
 
@@ -48,6 +49,20 @@ interface VulnerabilityItem {
 
 
 function Vulnerabilities() {
+  // Test block
+  const test_query = gql`
+    query vulnerabilities {
+        id
+    }
+  `
+  const { loading, error, data } = useQuery(test_query);
+
+  if (loading) console.log("LOADING...");
+  if (error) console.log(error);
+  console.log(data);
+
+
+
     const [selectedItems, setSelectedItems] = useState<ResourceListSelectedItems>([]);
     const [sortValue, setSortValue] = useState('PRIORITY_ASC');
     const [taggedWith, setTaggedWith] = useState('');
@@ -91,7 +106,7 @@ function Vulnerabilities() {
           }
           return true;
       });
-      
+
       if (taggedWith) {
         filteredItems = filteredItems.filter(item => {
             switch(taggedWith) {
@@ -124,12 +139,12 @@ function Vulnerabilities() {
       handleTaggedWithRemove();
       handleQueryValueRemove();
     }, [handleQueryValueRemove, handleTaggedWithRemove]);
-  
+
     const resourceName = {
       singular: 'vulnerability',
       plural: 'vulnerabilities',
     };
-  
+
     const promotedBulkActions = [
       {
         content: 'Patch vulnerabilities',
@@ -142,7 +157,7 @@ function Vulnerabilities() {
       {label: 'Medium', value: 'Medium'},
       {label: 'Low', value: 'Low'},
     ];
-  
+
     const filters = [
       {
         key: 'taggedWith3',
@@ -158,7 +173,7 @@ function Vulnerabilities() {
         shortcut: true,
       },
     ];
-  
+
     const appliedFilters = !isEmpty(taggedWith)
       ? [
           {
@@ -168,7 +183,7 @@ function Vulnerabilities() {
           },
         ]
       : [];
-  
+
     const filterControl = (
       <Filters
         queryValue={queryValue}
@@ -184,7 +199,7 @@ function Vulnerabilities() {
     return (
     <NavigationFrame>
         <Page title="Vulnerabilties">
-        
+
         <Card>
             <ResourceList
               resourceName={resourceName}
@@ -209,8 +224,8 @@ function Vulnerabilities() {
         </Card>
         </Page>
     </NavigationFrame>
-        
-      
+
+
     );
 
     function renderItem(item: VulnerabilityItem) {
@@ -246,14 +261,14 @@ function Vulnerabilities() {
                     {patchAvailable ? "Patch Available" : "No Patch Available"}
                 </Stack.Item>
               </Stack>
-            
+
             </Stack>
-            
-           
+
+
         </ResourceItem>
       );
     }
-  
+
     function disambiguateLabel(key: string, value: string) {
       switch (key) {
         case 'taggedWith3':
@@ -266,7 +281,7 @@ function Vulnerabilities() {
     function resolveItemIds({id}: VulnerabilityItem) {
       return String(id);
     }
-  
+
     function isEmpty(value: string | Array<any>) {
       if (Array.isArray(value)) {
         return value.length === 0;

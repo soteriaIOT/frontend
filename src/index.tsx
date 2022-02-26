@@ -1,12 +1,22 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { ApolloClient, InMemoryCache, ApolloProvider, useQuery, gql } from "@apollo/client";
+import { ApolloClient, InMemoryCache, ApolloProvider, HttpLink } from "@apollo/client";
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
-const API_URL = "https://soteriaiot-api.herokuapp.com/"
+const API_URL = "https://soteriaiot-api.herokuapp.com/query"
 const client = new ApolloClient({
-  uri: API_URL,
+  link: new HttpLink({
+    uri: API_URL,
+    fetchOptions: {
+      mode: 'no-cors',
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Credentials': true,
+      },
+    }
+  }),
   cache: new InMemoryCache()
 });
 
