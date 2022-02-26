@@ -49,20 +49,6 @@ interface VulnerabilityItem {
 
 
 function Vulnerabilities() {
-  // Test block
-  const test_query = gql`
-    query vulnerabilities {
-        id
-    }
-  `
-  const { loading, error, data } = useQuery(test_query);
-
-  if (loading) console.log("LOADING...");
-  if (error) console.log(error);
-  console.log(data);
-
-
-
     const [selectedItems, setSelectedItems] = useState<ResourceListSelectedItems>([]);
     const [sortValue, setSortValue] = useState('PRIORITY_ASC');
     const [taggedWith, setTaggedWith] = useState('');
