@@ -7,6 +7,8 @@ import {Frame, TopBar} from '@shopify/polaris';
 
 import Sidebar from '../../components/sidebar/index';
 
+import useWindowDimensions from '../../hooks/useWindowDimensions';
+
 
 function NavigationFrame({children}: {children: React.ReactNode}) {
   const [mobileNavigationActive, setMobileNavigationActive] = useState(false);
@@ -19,10 +21,12 @@ function NavigationFrame({children}: {children: React.ReactNode}) {
     [],
   );
 
+  const { height, width } = useWindowDimensions();
+
   return (
     <Frame 
         navigation={<Sidebar />} 
-        topBar={<TopBar showNavigationToggle onNavigationToggle={toggleMobileNavigationActive}/>} 
+        topBar={width <= 768 ? <TopBar showNavigationToggle onNavigationToggle={toggleMobileNavigationActive}/> : null} 
         showMobileNavigation={mobileNavigationActive}
         onNavigationDismiss={toggleMobileNavigationActive}
     >
