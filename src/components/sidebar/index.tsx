@@ -5,19 +5,30 @@ import {useLocation} from 'react-router-dom'
 
 import styled from 'styled-components';
 
+import icon from '../../assets/logo-with-name.svg';
+
 const FullHeight = styled.div`
     height: 100%;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: flex-start;
     padding-top: 5vh;
 `;
+
+const Logo = styled.img`
+    max-width: 60%;
+    height: auto;
+    margin-left: 1em;
+    margin-top: -4vh;
+    margin-bottom: 2vh;
+`
 
 function Sidebar() {
     const location = useLocation();
     return (
         <Navigation location={location.pathname}>
             <FullHeight>
+                <Logo src={icon} />
                 <Navigation.Section
                     items={[
                         {
