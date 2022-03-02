@@ -38,33 +38,46 @@ export default function LoginSignup({
   );
 
   const handleSubmit = useCallback(() => {
-    var params = {
-      TableName: "login-information",
-      Key: {
-        username: { S: email },
-      },
-    };
-    console.log(password);
-    ddb.getItem(params, function (err: AWSError, data: GetItemOutput) {
-      if (err) {
-        console.log("Error", err);
-      } else {
-        console.log(data);
-        console.log(data.Item);
-        if (data.Item) {
-          console.log(data.Item.password.S);
+    if (loginNotSignup) {
+      const params = {
+        TableName: "login-information",
+        Key: {
+          username: { S: email },
+        },
+      };
+      ddb.getItem(params, function (err: AWSError, data: GetItemOutput) {
+        if (err) {
+          console.log("Error", err);
+        } else {
+          if (data.Item && data.Item.password.S === password) {
+            console.log("Successfully authenticated.");
+            navigate("/dashboard");
+            handleModalChange();
+          } else {
+            console.log("Password is incorrect.");
+          }
         }
-        if (data.Item && data.Item.password.S === password) {
-          console.log("Successfully authenticated.");
+      });
+    } else {
+      const params = {
+        TableName: "login-information",
+        Item: {
+          username: { S: email },
+          password: { S: password },
+          name: { S: name },
+        },
+      };
+      ddb.putItem(params, function (err, data) {
+        if (err) {
+          console.log("Error", err);
+        } else {
+          console.log("Success", data);
           navigate("/dashboard");
           handleModalChange();
-        } else {
-          console.log("Password is incorrect.");
         }
-      }
-    });
+      });
+    }
   }, [email, name, password]);
-  console.log(email);
 
   return (
     <div style={{ height: "500px" }}>
