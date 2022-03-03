@@ -16,7 +16,7 @@ function Dashboard() {
     
     return (
     <NavigationFrame>
-      <iframe src='https://soteria-metrics.ml/d/bOYL0Bf7k/test-dashboard?orgId=2' width='98%' height='95%' style={{margin: "1%"}}/>
+      <iframe src='https://soteria-metrics.ml/d/bOYL0Bf7k/device-data?orgId=2' width='98%' height='95%' style={{margin: "1%"}}/>
     </NavigationFrame>
     );
   

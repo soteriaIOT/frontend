@@ -2,13 +2,15 @@ import React, {useCallback, useState} from 'react';
 import { useNavigate } from "react-router-dom";
 import {Button} from '@shopify/polaris';
 
+import useAuth from '../../hooks/useAuth';
+
 export default function Logout() {
+    const auth = useAuth();
 
     const navigate = useNavigate();
 
     const handleSubmit = useCallback(() => {
-    console.log("logging out");
-    navigate("/")
+        auth.signout(() => navigate("/", { state: {location: {pathname:""}} }));
     }, []);
 
 

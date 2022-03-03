@@ -1,9 +1,8 @@
 import React, { useCallback, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Modal, Stack, TextField, Form, ThemeProvider } from "@shopify/polaris";
-import * as AWS from "aws-sdk";
-import { AWSError } from "aws-sdk";
-import { GetItemOutput } from "aws-sdk/clients/dynamodb";
+import { useLocation, useNavigate } from "react-router-dom";
+import { Modal, Stack, TextField, Form } from "@shopify/polaris";
+
+import useAuth from '../../hooks/useAuth'
 
 export default function LoginSignup({
   active,
@@ -18,13 +17,7 @@ export default function LoginSignup({
   const [loginNotSignup, setLoginNotSignup] = useState(false);
 
   const navigate = useNavigate();
-
-  AWS.config.update({ region: "us-east-2" });
-  AWS.config.update({
-    accessKeyId: "AKIASM7RO3GR6EFRV2X3",
-    secretAccessKey: "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",
-  });
-  var ddb = new AWS.DynamoDB({ apiVersion: "2012-08-10" });
+  const auth = useAuth();
 
   const handleModalChange = useCallback(() => setActive(!active), [active]);
 
@@ -32,52 +25,13 @@ export default function LoginSignup({
     handleModalChange();
   };
 
-  const handleLoginNotSignupChange = useCallback(
-    () => setLoginNotSignup(!loginNotSignup),
-    [loginNotSignup]
-  );
-
   const handleSubmit = useCallback(() => {
     if (loginNotSignup) {
-      const params = {
-        TableName: "login-information",
-        Key: {
-          username: { S: email },
-        },
-      };
-      ddb.getItem(params, function (err: AWSError, data: GetItemOutput) {
-        if (err) {
-          console.log("Error", err);
-        } else {
-          if (data.Item && data.Item.password.S === password) {
-            console.log("Successfully authenticated.");
-            navigate("/dashboard");
-            handleModalChange();
-          } else {
-            console.log("Password is incorrect.");
-          }
-        }
-      });
+        auth.signin("test", () => navigate("/dashboard", { replace: true }))
     } else {
-      const params = {
-        TableName: "login-information",
-        Item: {
-          username: { S: email },
-          password: { S: password },
-          name: { S: name },
-        },
-      };
-      ddb.putItem(params, function (err, data) {
-        if (err) {
-          console.log("Error", err);
-        } else {
-          console.log("Success", data);
-          navigate("/dashboard");
-          handleModalChange();
-        }
-      });
+        auth.signup("test", () => navigate("/dashboard", { replace: true }))
     }
-  }, [email, name, password]);
+  }, [loginNotSignup, email, name, password]);
 
   return (
     <div style={{ height: "500px" }}>
@@ -92,7 +46,7 @@ export default function LoginSignup({
         secondaryActions={[
           {
             content: loginNotSignup ? "Sign up" : "Login",
-            onAction: handleLoginNotSignupChange,
+            onAction: () => setLoginNotSignup(!loginNotSignup),
           },
         ]}
       >

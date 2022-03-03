@@ -4,9 +4,10 @@ import styled from 'styled-components'
 
 import {Page} from '@shopify/polaris';
 
-
 import Logout from '../../components/logout/index';
 import NavigationFrame from '../../components/frame/index';
+
+
 
 
 function Settings() {
