@@ -35,7 +35,6 @@ function Topbar() {
   const [active, setActive] = useState(false);
   const { scrollDirection } = useScroll();  
   
-  console.log(scrollDirection);
   const activator = (
       <Button primary onClick={() => setActive(!active)}>
         Sign Up
@@ -51,11 +50,6 @@ function Topbar() {
           <Stack.Item>
             <Button url="about" plain monochrome removeUnderline>
               About
-            </Button>
-          </Stack.Item>
-          <Stack.Item>
-            <Button url="faq" plain monochrome removeUnderline>
-              FAQ
             </Button>
           </Stack.Item>
           <Stack.Item>{activator}</Stack.Item>

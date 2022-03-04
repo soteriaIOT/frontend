@@ -18,6 +18,7 @@ import Dashboard from './pages/dashboard';
 import Settings from './pages/settings';
 import Home from './pages/home';
 import Frontpage from './pages/frontpage';
+import About from './pages/about';
 
 import AuthProvider from './context/auth';
 
@@ -46,6 +47,7 @@ function App() {
             <Route path="/dashboard/:device_id" element={<RequireAuth><Dashboard /></RequireAuth>} />
             <Route path="/settings" element={<RequireAuth><Settings /></RequireAuth>} />
             <Route path="/home" element={<RequireAuth><Home /></RequireAuth>} />
+            <Route path="/about" element={<About />} />
             <Route path="/" element={<Frontpage />} />
           </Routes>
         </BrowserRouter>
