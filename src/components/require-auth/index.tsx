@@ -10,7 +10,7 @@ export default function RequireAuth({ children }: { children: JSX.Element }) {
     let navigate = useNavigate();
 
     useEffect(() => {
-        if (!auth.user) {
+        if (!auth.token) {
             navigate('/', { state: { from: location } });
         }
     }, [auth]);

@@ -1,62 +1,92 @@
-import React, {createContext, useState} from 'react';
-
-const fakeAuthProvider = {
-    isAuthenticated: false,
-    signin(callback: VoidFunction) {
-      fakeAuthProvider.isAuthenticated = true;
-      setTimeout(callback, 100); // fake async
-      console.log("SIGNING IN")
-    },
-    signout(callback: VoidFunction) {
-      fakeAuthProvider.isAuthenticated = false;
-      setTimeout(callback, 100);
-      console.log("SIGNING OUT")
-    },
-    signup(callback: VoidFunction) {
-      fakeAuthProvider.isAuthenticated = true;
-      setTimeout(callback, 100);
-      console.log("SIGNING UP")
-    },
-
-  };
+import React, {createContext, useEffect, useState} from 'react';
+import {gql, useMutation} from '@apollo/client';
 
 interface AuthContextType {
-    user: any;
-    signin: (user: string, callback: VoidFunction) => void;
-    signout: (callback: VoidFunction) => void;
-    signup: (user: string, callback: VoidFunction) => void;
+    token: any;
+    signin: (user: string, password: string) => Promise<boolean>;
+    signout: () => void;
+    signup: (name: string, user: string, password: string) => Promise<boolean>;
 }
 
+interface Token {
+    token: string;
+    expired_at: string;
+}
+
+interface LoginToken {
+    login: Token;
+}
+
+interface CreateToken {
+    createUser: Token;
+}
+
+  
 
 const AuthContext = createContext<AuthContextType>(null!);
 
 export default function AuthProvider({ children }: { children: React.ReactNode }) {
-    let [user, setUser] = useState<any>(null);
-  
-    let signin = (newUser: string, callback: VoidFunction) => {
-      return fakeAuthProvider.signin(() => {
-        setUser(newUser);
-        callback();
-      });
-    };
-  
-    let signout = (callback: VoidFunction) => {
-      return fakeAuthProvider.signout(() => {
-        setUser(null);
-        callback();
-      });
+    let [token, setToken] = useState<string | null>(null);
+
+    const [signinMutation, {}] = useMutation(gql`mutation Login($username: String!, $password: String!) {
+        login(input: {username: $username, password: $password}) {
+          token
+          expired_at
+        }
+      }`);
+    
+    
+    const [signupMutation, {}] = useMutation(gql`
+        mutation CreateUser($name: String!, $username: String!, $password: String!) {
+            createUser(input:{
+                name: $name, 
+                username: $username, 
+                password: $password
+            }) {
+                token
+                expired_at
+            }
+        }`)
+
+    let signin = async (email: string, password: string) => {
+        try {
+            const { data } = await signinMutation({
+                variables: {
+                    username: email,
+                    password
+                }
+            })
+        setToken((data as LoginToken).login.token);
+        } catch {
+            return false;
+        }
+        return true;
     };
 
-    let signup = (newUser: string, callback: VoidFunction) => {
-        return fakeAuthProvider.signup(() => {
-          setUser(newUser);
-          callback();
-        });
+    let signout = () => {
+        setToken(null);
+        return;
+    };
+
+    let signup = async (name: string, email: string, password: string) => {
+        try {
+            const { data } = await signupMutation({
+                variables: {
+                    name,
+                    username: email,
+                    password
+                }
+            })
+            setToken((data as CreateToken).createUser.token);
+        } catch {
+            return false
+        }
+        return true;
       };
-  
-    let value = { user, signin, signout, signup };
-  
+
+    let value = { token, signin, signout, signup };
+
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
-export {AuthContext, AuthProvider}
+export {AuthContext, AuthProvider} 

@@ -1,8 +1,12 @@
 import React, { useCallback, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Modal, Stack, TextField, Form } from "@shopify/polaris";
+import { Modal, Stack, TextField, Form, InlineError } from "@shopify/polaris";
+
+import {gql, useQuery, useMutation} from "@apollo/client";
+
 
 import useAuth from '../../hooks/useAuth'
+
 
 export default function LoginSignup({
   active,
@@ -15,6 +19,8 @@ export default function LoginSignup({
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loginNotSignup, setLoginNotSignup] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState("");
 
   const navigate = useNavigate();
   const auth = useAuth();
@@ -25,18 +31,33 @@ export default function LoginSignup({
     handleModalChange();
   };
 
-  const handleSubmit = useCallback(() => {
+  const handleSubmit = useCallback(async () => {
+    setSubmitted(true);
     if (loginNotSignup) {
-        auth.signin("test", () => navigate("/dashboard", { replace: true }))
+      if(await auth.signin(email, password)){
+        setSubmitted(false);
+        navigate("/dashboard", {replace: true})
+      } else {
+        setError("Invalid email or password");
+        setSubmitted(false);
+      }
     } else {
-        auth.signup("test", () => navigate("/dashboard", { replace: true }))
+      if(await auth.signup(name, email, password)){
+
+        setSubmitted(false);
+        navigate("/dashboard", {replace: true})
+      } else {
+        setError("Invalid email or password");
+        setSubmitted(false);
+      }
     }
-  }, [loginNotSignup, email, name, password]);
+  }, [loginNotSignup, email, name, password, setSubmitted, setError, auth, navigate]);
 
   return (
     <div style={{ height: "500px" }}>
       <Modal
         open={active}
+        loading={submitted}
         onClose={handleClose}
         title="Login"
         primaryAction={{
@@ -79,6 +100,7 @@ export default function LoginSignup({
                   onChange={(value) => setPassword(value)}
                   autoComplete="off"
                 />
+                {error !== "" && <InlineError message="Store name is required" fieldID="password" />}
               </Form>
             </Stack.Item>
           </Stack>

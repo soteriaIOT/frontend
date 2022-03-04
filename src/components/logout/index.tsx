@@ -10,7 +10,9 @@ export default function Logout() {
     const navigate = useNavigate();
 
     const handleSubmit = useCallback(() => {
-        auth.signout(() => navigate("/", { state: {location: {pathname:""}} }));
+        auth.signout();
+        // Don't show toast when navigating to home-page
+        navigate("/", { state: {from: {pathname:""}} })
     }, []);
 
 

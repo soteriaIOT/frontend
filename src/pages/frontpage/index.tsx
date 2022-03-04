@@ -139,8 +139,7 @@ function Frontpage() {
 
   useEffect(() => {
     const { from } = location.state as LocationState || { from: { pathname: "" } };
-    console.log(from.pathname)
-    if(from.pathname !== "" && from.pathname !== "/settings"){
+    if(from.pathname !== ""){
       console.log(from.pathname)
       toast.error("You must be logged in to access that page", {
         duration: 5000,
