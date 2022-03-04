@@ -35,7 +35,6 @@ function Topbar() {
   const [active, setActive] = useState(false);
   const { scrollDirection } = useScroll();  
   
-  console.log(scrollDirection);
   const activator = (
       <Button primary onClick={() => setActive(!active)}>
         Sign Up
