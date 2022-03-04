@@ -52,11 +52,6 @@ function Topbar() {
               About
             </Button>
           </Stack.Item>
-          <Stack.Item>
-            <Button url="faq" plain monochrome removeUnderline>
-              FAQ
-            </Button>
-          </Stack.Item>
           <Stack.Item>{activator}</Stack.Item>
         </Stack>
       </TopBar>
