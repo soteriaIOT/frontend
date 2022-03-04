@@ -8,9 +8,6 @@ import {
   Link as ReactRouterLink
 } from "react-router-dom";
 
-import { useNavigate, useLocation, Navigate } from 'react-router-dom';
-
-
 import enTranslations from '@shopify/polaris/locales/en.json';
 import {AppProvider} from '@shopify/polaris';
 

@@ -100,7 +100,7 @@ export default function LoginSignup({
                   onChange={(value) => setPassword(value)}
                   autoComplete="off"
                 />
-                {error !== "" && <InlineError message="Store name is required" fieldID="password" />}
+                {error !== "" && <InlineError message={error} fieldID="password" />}
               </Form>
             </Stack.Item>
           </Stack>

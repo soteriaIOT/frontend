@@ -28,6 +28,12 @@ const AuthContext = createContext<AuthContextType>(null!);
 export default function AuthProvider({ children }: { children: React.ReactNode }) {
     let [token, setToken] = useState<string | null>(null);
 
+    useEffect(() => {
+        if (token) {
+            localStorage.setItem('token', token);
+        }
+    }, [token]);
+
     const [signinMutation, {}] = useMutation(gql`mutation Login($username: String!, $password: String!) {
         login(input: {username: $username, password: $password}) {
           token
