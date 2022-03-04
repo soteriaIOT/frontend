@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {createContext, useState, useContext} from 'react';
 
 import '@shopify/polaris/build/esm/styles.css';
 import {
@@ -8,10 +8,10 @@ import {
   Link as ReactRouterLink
 } from "react-router-dom";
 
-
 import enTranslations from '@shopify/polaris/locales/en.json';
 import {AppProvider} from '@shopify/polaris';
 
+import RequireAuth from "./components/require-auth";
 import Vulnerabilities from './pages/vulnerabilities';
 import Devices from './pages/devices';
 import Dashboard from './pages/dashboard';
@@ -19,6 +19,9 @@ import Settings from './pages/settings';
 import Home from './pages/home';
 import Frontpage from './pages/frontpage';
 import About from './pages/about';
+
+import AuthProvider from './context/auth';
+
 
 function App() {
   return (
@@ -29,18 +32,26 @@ function App() {
       }}}
       linkComponent={Link}
     >
-      <BrowserRouter>
-        <Routes>
-          <Route path="/devices" element={<Devices />} />
-          <Route path="/vulnerabilities" element={<Vulnerabilities />} />
-          <Route path="/dashboard/" element={<Dashboard />} />
-          <Route path="/dashboard/:device_id" element={<Dashboard />} />
-          <Route path="/settings" element={<Settings />} />
-          <Route path="/home" element={<Home />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/" element={<Frontpage />} />
-        </Routes>
-      </BrowserRouter>
+      <AuthProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/devices" element={<RequireAuth><Devices /></RequireAuth>} />
+            <Route path="/vulnerabilities" element={<RequireAuth><Vulnerabilities /></RequireAuth>} />
+            <Route 
+              path="/dashboard/" 
+              element={
+                <RequireAuth>
+                  <Dashboard />
+                </RequireAuth>
+              } />
+            <Route path="/dashboard/:device_id" element={<RequireAuth><Dashboard /></RequireAuth>} />
+            <Route path="/settings" element={<RequireAuth><Settings /></RequireAuth>} />
+            <Route path="/home" element={<RequireAuth><Home /></RequireAuth>} />
+            <Route path="/about" element={<About />} />
+            <Route path="/" element={<Frontpage />} />
+          </Routes>
+        </BrowserRouter>
+      </AuthProvider>
   </AppProvider>
   );
 }
