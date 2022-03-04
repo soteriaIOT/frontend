@@ -18,6 +18,7 @@ import Dashboard from './pages/dashboard';
 import Settings from './pages/settings';
 import Home from './pages/home';
 import Frontpage from './pages/frontpage';
+import About from './pages/about';
 
 function App() {
   return (
@@ -36,6 +37,7 @@ function App() {
           <Route path="/dashboard/:device_id" element={<Dashboard />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/home" element={<Home />} />
+          <Route path="/about" element={<About />} />
           <Route path="/" element={<Frontpage />} />
         </Routes>
       </BrowserRouter>
