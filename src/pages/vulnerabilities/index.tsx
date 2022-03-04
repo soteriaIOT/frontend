@@ -2,9 +2,13 @@ import React, {useState, useCallback, useEffect} from 'react';
 
 import styled from 'styled-components'
 
-import {Page, Card, ResourceList, ResourceItem, TextStyle, Select, Filters, ResourceListSelectedItems, Tooltip, Stack} from '@shopify/polaris';
+import {Page, Card, ResourceList, ResourceItem, TextStyle, Select, Filters, ResourceListSelectedItems, Tooltip, Stack, EmptyState} from '@shopify/polaris';
 import {Icon} from '@shopify/polaris';
 import {CircleAlertMajor, InfoMinor} from '@shopify/polaris-icons';
+
+import {gql, useQuery} from '@apollo/client';
+
+import loadingV from '../../assets/loading_vulnerabilities.png';
 
 
 
@@ -54,26 +58,44 @@ function Vulnerabilities() {
     const [queryValue, setQueryValue] = useState('');
     const [filteredItems, setFilteredItems] = useState<VulnerabilityItem[]>([]);
 
-    const [items, setItems] = useState([
-        {
-            id: "1",
-            url: "https://github.com/advisories/GHSA-c36v-fmgq-m8hx",
-            name: "CVE-2021-3757",
-            description: "immer is vulnerable to Improperly Controlled Modification of Object Prototype Attributes ('Prototype Pollution')",
-            priority: Priority.High,
-            patchAvailable: false,
-            devicesAffected: 26,
-          },
-          {
-            id: "12122",
-            url: "https://github.com/advisories/GHSA-c36v-fmgq-m8hx",
-            name: "CVE-2021-3754",
-            description: "immer is vulnerable to Improperly Controlled Modification of Object Prototype Attributes ('Prototype Pollution')",
-            priority: Priority.Medium,
-            patchAvailable: true,
-            devicesAffected: 64,
-          },
-    ]);
+    let { loading, error, data } = useQuery(gql`
+      query {
+        vulnerabilities {
+          id
+          dependency {
+            name
+          }
+          severity
+          key_is_patched
+          patch_available
+          permalink
+          summary
+          devices_affected {
+            id
+          }
+        } 
+      }
+    `);
+
+    useEffect(() => {
+        if (data) {
+          let k = data.vulnerabilities.map((item: any) => {
+                return {
+                  id: String(item.id),
+                  url: item.permalink,
+                  name: item.dependency.name,
+                  description: item.summary,
+                  priority: item.severity === 'HIGH' ? Priority.High : item.severity === 'MODERATE' ? Priority.Medium : Priority.Low,
+                  patchAvailable: item.patch_available,
+                  devicesAffected: item.devices_affected.length
+                }
+             });
+          setItems(k);
+          setFilteredItems(k);
+        }
+    }, [loading, error, data]);
+
+    const [items, setItems] = useState<VulnerabilityItem[]>([]);
 
     const handleTaggedWithChange = useCallback(
       (value) => setTaggedWith(value),
@@ -116,7 +138,7 @@ function Vulnerabilities() {
       });
 
       setFilteredItems(sorted);
-  }, [queryValue, taggedWith, sortValue, setFilteredItems])
+  }, [queryValue, taggedWith, sortValue, setFilteredItems, items])
 
     const handleTaggedWithRemove = useCallback(() => setTaggedWith(''), []);
     const handleQueryValueRemove = useCallback(() => setQueryValue(''), []);
@@ -132,7 +154,7 @@ function Vulnerabilities() {
 
     const promotedBulkActions = [
       {
-        content: 'Patch vulnerabilities',
+        content: 'Update vulnerabilities',
         onAction: () => console.log('Todo: implement patch vulnerabilities'),
       },
     ]
@@ -181,6 +203,29 @@ function Vulnerabilities() {
       </Filters>
     );
 
+    const emptyStateMarkup =
+    loading ? (
+      <EmptyState
+        heading="Loading vulnerabilities"
+        image={loadingV}
+      >
+        <p>
+          We're fetching the vulnerabilities for you.
+        </p>
+      </EmptyState>
+    ) : (
+        !appliedFilters.length && !items.length ? (
+          <EmptyState
+            heading="No vulnerabilities found"
+            image={loadingV}
+          >
+            <p>
+              Try changing up the filters or check back later.
+            </p>
+          </EmptyState>
+        ) : undefined
+    )
+
     return (
     <NavigationFrame>
         <Page title="Vulnerabilties">
@@ -191,6 +236,7 @@ function Vulnerabilities() {
               items={filteredItems}
               isFiltered={filteredItems.length != items.length}
               renderItem={renderItem}
+              emptyState={emptyStateMarkup}
               selectedItems={selectedItems}
               onSelectionChange={(v) => setSelectedItems(v as ResourceListSelectedItems)}
               promotedBulkActions={promotedBulkActions}
@@ -201,7 +247,6 @@ function Vulnerabilities() {
               ]}
               onSortChange={(selected) => {
                   setSortValue(selected);
-                  console.log(selected);
               }}
               filterControl={filterControl}
               resolveItemId={resolveItemIds}
