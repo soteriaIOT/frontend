@@ -1,8 +1,8 @@
-import React, {useState, useCallback, useEffect} from 'react';
+import React, {useState, useCallback, useEffect, Fragment} from 'react';
 
 import styled from 'styled-components'
 
-import {Page, Card, ResourceList, ResourceItem, TextStyle, Filters, ResourceListSelectedItems, EmptyState, FilterInterface, AppliedFilterInterface, Toast} from '@shopify/polaris';
+import {Page, Card, ResourceList, ResourceItem, TextStyle, Filters, ResourceListSelectedItems, EmptyState, FilterInterface, AppliedFilterInterface, Toast, Tooltip} from '@shopify/polaris';
 import {Icon} from '@shopify/polaris';
 import {CircleAlertMajor} from '@shopify/polaris-icons';
 
@@ -19,11 +19,17 @@ enum DeviceStatus {
     Error=3
 }
 
+interface Dependency {
+  name: string;
+  version: string;
+}
+
 interface DeviceItem {
     id: string;
     url: string;
     name: string;
-    status: DeviceStatus
+    status: DeviceStatus;
+    dependencies: Dependency[];
     vulnerabilitiesAffecting: number;
 }
 
@@ -50,6 +56,7 @@ function Devices() {
           name
           dependencies {
             name
+            version
           }
           vulnerabilities {
             dependency {
@@ -67,6 +74,7 @@ function Devices() {
                 id: item.id,
                 name: item.name,
                 url: `/dashboard/${item.id}`,
+                dependencies: item.dependencies,
                 vulnerabilitiesAffecting: item.vulnerabilities.length,
                 status: item.vulnerabilities.length == 0 ? DeviceStatus.Normal : item.vulnerabilities.length < 2 ? DeviceStatus.Warning : DeviceStatus.Error,
               }
@@ -177,8 +185,11 @@ function Devices() {
     );
 
     function renderItem(item: DeviceItem) {
-      const {id, url, name, vulnerabilitiesAffecting, status} = item;
+      const {id, url, name, vulnerabilitiesAffecting, status, dependencies} = item;
       const media = <Icon source={CircleAlertMajor} color={status == DeviceStatus.Error ? "critical" : (status == DeviceStatus.Warning ? "warning" : "success")} backdrop/>;
+      const description = <Fragment><p>Current device deps.</p>{dependencies.map((item: Dependency) => {
+        return <p>{item.name}=={item.version}</p> 
+      })}</Fragment>;
       return (
         <ResourceItem
           id={String(id)}
@@ -190,7 +201,9 @@ function Devices() {
         >
           <TextStyle variation="strong">{name}</TextStyle>
           <br />
-          <TextStyle variation="subdued">{vulnerabilitiesAffecting} {vulnerabilitiesAffecting > 1 ? "vulnerabilities": "vulnerability"} affecting</TextStyle>
+          <Tooltip content={description}>
+            <TextStyle variation="subdued">{vulnerabilitiesAffecting} {vulnerabilitiesAffecting > 1 ? "vulnerabilities": "vulnerability"} affecting</TextStyle>
+          </Tooltip>
         </ResourceItem>
       );
     }

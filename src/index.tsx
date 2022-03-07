@@ -6,7 +6,7 @@ import App from './App';
 import './index.scss';
 import reportWebVitals from './reportWebVitals';
 
-const API_URL = "https://soteriaiot-api.herokuapp.com/query"
+const API_URL = "http://localhost:8081/query"
 
 
 const httpLink = new HttpLink({
