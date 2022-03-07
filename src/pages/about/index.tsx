@@ -29,7 +29,7 @@ const TopBarWrapper = styled.div`
 `;
 
 const Container = styled.div`
-margin-top: 10vh;
+margin-top: 20vh;
 `
 
 function Person({img, name}: {img: string, name: string}) {

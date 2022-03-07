@@ -79,6 +79,15 @@ function Devices() {
                 status: item.vulnerabilities.length == 0 ? DeviceStatus.Normal : item.vulnerabilities.length < 2 ? DeviceStatus.Warning : DeviceStatus.Error,
               }
             });
+        k.sort((a: DeviceItem, b: DeviceItem) => {
+          if (a.vulnerabilitiesAffecting > b.vulnerabilitiesAffecting) {
+            return -1;
+          }
+          if (a.vulnerabilitiesAffecting < b.vulnerabilitiesAffecting) {
+            return 1;
+          }
+          return 0;
+        });
         setItems(k);
         setFilteredItems(k);
       }
