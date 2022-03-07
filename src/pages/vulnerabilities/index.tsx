@@ -6,7 +6,7 @@ import {Page, Card, ResourceList, ResourceItem, TextStyle, Select, Filters, Reso
 import {Icon} from '@shopify/polaris';
 import {CircleAlertMajor, InfoMinor} from '@shopify/polaris-icons';
 
-import {gql, useQuery} from '@apollo/client';
+import {gql, useQuery, useMutation} from '@apollo/client';
 
 import loadingV from '../../assets/loading_vulnerabilities.png';
 
@@ -75,6 +75,17 @@ function Vulnerabilities() {
           }
         } 
       }
+    `);
+
+    const [updateVulnerabilitiesMutation, {}] = useMutation(gql`mutation UpdateVulnerabilities($ids: [ID!]!){
+      updateVulnerabilities(input:$ids){
+        id
+        name 
+        dependency {
+          name
+        }
+      }
+    }
     `);
 
     useEffect(() => {
@@ -155,7 +166,11 @@ function Vulnerabilities() {
     const promotedBulkActions = [
       {
         content: 'Update vulnerabilities',
-        onAction: () => console.log('Todo: implement patch vulnerabilities'),
+        onAction: () => updateVulnerabilitiesMutation({
+          variables: {
+            ids:selectedItems,
+          },
+        })
       },
     ]
 
