@@ -49,21 +49,7 @@ const TranslateUp = styled.div`
     width: 80%;
     margin: auto;
   }
-  
 `
-
-// const Banner = styled.div`
-//   background-image: url(${bannerImage});
-//   height: 90vh;
-//   background-size: cover;
-//   display: flex;
-//   padding-left: 4vh;
-//   .Polaris-Stack {
-//     width: 80%;
-//     margin: auto;
-//   }
-//   margin-bottom: 10vh;
-// `;
 
 const WhiteText = styled.div`
   color: #fff;
