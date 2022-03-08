@@ -6,6 +6,7 @@ import {Page, Card, ResourceList, ResourceItem, TextStyle, Filters, ResourceList
 import {Icon} from '@shopify/polaris';
 import {CircleAlertMajor} from '@shopify/polaris-icons';
 
+
 import {gql, useQuery} from '@apollo/client';
 
 import loadingD from '../../assets/loading_devices.png';
@@ -24,6 +25,12 @@ interface Dependency {
   version: string;
 }
 
+interface VulnerabilityItem {
+  name: string;
+  summary: string;
+}
+
+
 interface DeviceItem {
     id: string;
     url: string;
@@ -31,6 +38,7 @@ interface DeviceItem {
     status: DeviceStatus;
     dependencies: Dependency[];
     vulnerabilitiesAffecting: number;
+    vulnerabilityItems: VulnerabilityItem[];
 }
 
 
@@ -59,6 +67,8 @@ function Devices() {
             version
           }
           vulnerabilities {
+            name
+            summary
             dependency {
               name
             }
@@ -76,6 +86,7 @@ function Devices() {
                 url: `/dashboard/${item.id}`,
                 dependencies: item.dependencies,
                 vulnerabilitiesAffecting: item.vulnerabilities.length,
+                vulnerabilityItems: item.vulnerabilities,
                 status: item.vulnerabilities.length == 0 ? DeviceStatus.Normal : item.vulnerabilities.length < 2 ? DeviceStatus.Warning : DeviceStatus.Error,
               }
             });
@@ -194,10 +205,10 @@ function Devices() {
     );
 
     function renderItem(item: DeviceItem) {
-      const {id, url, name, vulnerabilitiesAffecting, status, dependencies} = item;
+      const {id, url, name, vulnerabilitiesAffecting, status, vulnerabilityItems} = item;
       const media = <Icon source={CircleAlertMajor} color={status == DeviceStatus.Error ? "critical" : (status == DeviceStatus.Warning ? "warning" : "success")} backdrop/>;
-      const description = <Fragment><p>Current device deps.</p>{dependencies.map((item: Dependency) => {
-        return <p>{item.name}=={item.version}</p> 
+      const description = <Fragment><p>Current device vulns.</p>{vulnerabilityItems.map((vulnerability: VulnerabilityItem) => {
+        return <p key={vulnerability.summary}><TextStyle variation="strong">{vulnerability.name}</TextStyle> with {vulnerability.summary}</p> 
       })}</Fragment>;
       return (
         <ResourceItem

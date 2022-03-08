@@ -40,15 +40,22 @@ overflow: hidden !important;
 text-overflow: ellipsis;
 `
 
-interface VulnerabilityItem {
+interface Device {
+  name: string;
+}
+
+export interface VulnerabilityItem {
     id: string;
     url: string;
     name: string;
     description: string;
     priority: Priority;
     patchAvailable: boolean;
-    devicesAffected: number;
+    patched_versions: string[];
+    devicesAffected: Device[];
 }
+
+
 
 
 function Vulnerabilities() {
@@ -57,6 +64,7 @@ function Vulnerabilities() {
     const [taggedWith, setTaggedWith] = useState('');
     const [queryValue, setQueryValue] = useState('');
     const [filteredItems, setFilteredItems] = useState<VulnerabilityItem[]>([]);
+    const [isUpdating, setIsUpdating] = useState(false);
 
     let { loading, error, data, refetch } = useQuery(gql`
       query {
@@ -67,17 +75,18 @@ function Vulnerabilities() {
           }
           severity
           key_is_patched
+          patched_versions
           patch_available
           permalink
           summary
           devices_affected {
-            id
+            name
           }
         }
       }
     `);
 
-    const [updateVulnerabilitiesMutation, {}] = useMutation(gql`mutation UpdateVulnerabilities($ids: [ID!]!){
+    const [updateVulnerabilitiesMutation, {loading: loadingMut}] = useMutation(gql`mutation UpdateVulnerabilities($ids: [ID!]!){
       updateVulnerabilities(input:$ids){
         id
         name
@@ -99,7 +108,8 @@ function Vulnerabilities() {
                   description: item.summary,
                   priority: item.severity === 'HIGH' ? Priority.High : item.severity === 'MODERATE' ? Priority.Medium : Priority.Low,
                   patchAvailable: item.patch_available,
-                  devicesAffected: item.devices_affected.length
+                  patched_versions: item.patched_versions,
+                  devicesAffected: item.devices_affected
                 }
              });
           setItems(k);
@@ -166,14 +176,17 @@ function Vulnerabilities() {
 
     const promotedBulkActions = [
       {
-        content: 'Update vulnerabilities',
-        onAction: () => {
-          updateVulnerabilitiesMutation({
+        content: (isUpdating) ? 'Updating vulnerabilities' : 'Update vulnerabilities',
+        onAction: async () => {
+          setIsUpdating(true);
+          await updateVulnerabilitiesMutation({
             variables: {
               ids:selectedItems,
             },
           })
-          refetch()
+          await refetch();
+          setSelectedItems([]);
+          setIsUpdating(false);
         }
       },
     ]
@@ -278,8 +291,10 @@ function Vulnerabilities() {
     );
 
     function renderItem(item: VulnerabilityItem) {
-      const {id, url, name, description, priority, devicesAffected, patchAvailable} = item;
+      const {id, url, name, description, priority, devicesAffected, patchAvailable, patched_versions} = item;
       const media = <Icon source={CircleAlertMajor} color={priority == Priority.High ? "critical" : (priority == Priority.Medium ? "warning" : "success")} backdrop/>;
+      const devicesAffectedTooltip = <><TextStyle variation="strong">Devices Affected: </TextStyle> {devicesAffected.map(device => device.name).join(", ")}</>
+      const descriptionTooltip = <>{description}<br /><TextStyle variation="strong">patched in: </TextStyle> {patched_versions[0]}</>
       return (
         <ResourceItem
           id={String(id)}
@@ -294,22 +309,23 @@ function Vulnerabilities() {
               <Stack.Item fill>
                     <CVEHeading>
                         <TextStyle variation="strong">{name}</TextStyle>
-                        <Icon source={InfoMinor} color="subdued" />
                     </CVEHeading>
                     <CVESubtext>
-                        <Tooltip content={description}>
+                        <Tooltip content={descriptionTooltip}>
                             <TextStyle variation="subdued">{description}</TextStyle>
                         </Tooltip>
                     </CVESubtext>
               </Stack.Item>
-              <Stack distribution="fill" spacing="extraLoose" alignment="center">
-                <Stack.Item>
-                    {devicesAffected} device(s)
-                </Stack.Item>
-                <Stack.Item>
-                    {patchAvailable ? "Patch Available" : "No Patch Available"}
-                </Stack.Item>
-              </Stack>
+              <Tooltip content={devicesAffectedTooltip}>
+                <Stack distribution="fill" spacing="extraLoose" alignment="center">
+                  <Stack.Item>
+                      {devicesAffected.length} device(s)
+                  </Stack.Item>
+                  <Stack.Item>
+                      {patchAvailable ? "Patch Available" : "No Patch Available"}
+                  </Stack.Item>
+                </Stack>
+              </Tooltip>
 
             </Stack>
 
