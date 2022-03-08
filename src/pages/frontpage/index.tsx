@@ -15,7 +15,7 @@ import {
 import Topbar from "../../components/topbar";
 import Footer from "../../components/footer";
 
-import bannerImage from "../../assets/banner.png";
+import network from "../../assets/network.mp4";
 import vulnImage from "../../assets/vuln.png";
 import fleetImage from "../../assets/fleet.png";
 import orchImage from "../../assets/orch.png";
@@ -25,18 +25,31 @@ const TopBarWrapper = styled.div`
   width: 100%;
 `;
 
-const Banner = styled.div`
-  background-image: url(${bannerImage});
-  height: 90vh;
-  background-size: cover;
-  display: flex;
-  padding-left: 4vh;
+const BannerVideo = styled.video`
+  min-width: 100%;
+  min-height: 90vh;
+  object-fit: cover;
+
   .Polaris-Stack {
     width: 80%;
     margin: auto;
   }
-  margin-bottom: 10vh;
-`;
+  max-width: 98vw;
+  @media only screen and (max-width: 768px){
+    max-width: auto;
+  }
+
+  margin-bottom: -30vh;
+`
+
+const TranslateUp = styled.div`
+  .Polaris-Stack {
+    position: relative;
+    top: -35vh;
+    width: 80%;
+    margin: auto;
+  }
+`
 
 const WhiteText = styled.div`
   color: #fff;
@@ -45,7 +58,7 @@ const WhiteText = styled.div`
 const BannerHeader = styled.h1`
 font-size: max(min(5vw, 60px), 72px);
 font-weight: 700;
-line-hight: max(min(5vw, 60px), 72px);;
+line-height: max(min(5vw, 60px), 72px);;
 padding-bottom: max(5vw, 20px);
 `
 
@@ -153,21 +166,24 @@ function Frontpage() {
           <TopBarWrapper>
               <Topbar />
           </TopBarWrapper>
-          <Banner>
-              <Stack alignment="center" distribution="leading">
-                  <WhiteText>
-                      <BannerHeader>See. Know. Secure.</BannerHeader>
-                      <BannerSubheader>
-                          <MaxWidthContainer maxWidth="600px">
-                              Monitor every asset and detect vulnerabilities and threats.
-                          </MaxWidthContainer>
-                      </BannerSubheader>
-                      <BannerSubheader>
-                          Seamlessly.
-                      </BannerSubheader>
-                  </WhiteText>
-              </Stack>
-          </Banner>
+          <TranslateUp>
+          <BannerVideo autoPlay muted loop>
+            <source src={network} type="video/mp4" />
+          </BannerVideo>
+            <Stack alignment="center" distribution="leading">
+                <WhiteText>
+                    <BannerHeader>See. Know. Secure.</BannerHeader>
+                    <BannerSubheader>
+                        <MaxWidthContainer maxWidth="600px">
+                            Monitor every asset and detect vulnerabilities and threats.
+                        </MaxWidthContainer>
+                    </BannerSubheader>
+                    <BannerSubheader>
+                        Seamlessly.
+                    </BannerSubheader>
+                </WhiteText>
+            </Stack>
+          </TranslateUp>
           <Layout.Section>
               <Stack vertical alignment="center">
                   <DisplayText size="extraLarge">Our Features</DisplayText>

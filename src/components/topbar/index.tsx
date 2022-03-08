@@ -9,6 +9,8 @@ import {useScroll} from './../../hooks/useScroll'
 import LoginSignup from "../../components/login-sigup/index";
 
 import Logo from "../../assets/logo-with-name.svg";
+import LogoIcon from "../../assets/logo-icon.svg";
+import useWindowDimensions from "../../hooks/useWindowDimensions";
 
 // inspired by: https://dev.to/pratiksharm/navbar-hide-and-show-on-scroll-using-custom-react-hooks-1k98
 
@@ -34,25 +36,27 @@ const TopBar = styled.div`
 function Topbar() {
   const [active, setActive] = useState(false);
   const { scrollDirection } = useScroll();  
+  const {height, width} = useWindowDimensions();
   
-  const activator = (
-      <Button primary onClick={() => setActive(!active)}>
-        Sign Up
-      </Button>
-  );
   return (
     <Wrapper activeAndNotHidden={scrollDirection == "down"}>
       <TopBar>
-        <Stack alignment="center">
-          <Stack.Item fill>
-            <img src={Logo} alt="logo" style={{ height: "60px" }} />
-          </Stack.Item>
+        <Stack alignment="center" distribution={width <= 768 ? "fillEvenly": "equalSpacing"}>
           <Stack.Item>
-            <Button url="about" plain monochrome removeUnderline>
-              About
-            </Button>
+            {width <= 768 ? <img src={LogoIcon} alt="logo" style={{ height: "60px" }} />: <img src={Logo} alt="logo" style={{ height: "60px" }} />}
           </Stack.Item>
-          <Stack.Item>{activator}</Stack.Item>
+          <Stack alignment="center">
+            <Stack.Item>
+              <Button url="about" plain monochrome removeUnderline>
+                About
+              </Button>
+            </Stack.Item>
+            <Stack.Item>
+              <Button primary onClick={() => setActive(!active)}>
+                Sign Up
+              </Button>
+            </Stack.Item>
+          </Stack>
         </Stack>
       </TopBar>
       <LoginSignup
