@@ -45,7 +45,7 @@ function Devices() {
     const toggleActive = useCallback(() => setActive((active) => !active), []);
 
     const toastMarkup = active ? (
-      <Toast content="Checking for vulnerabilities message, check back later to see the results" onDismiss={toggleActive} />
+      <Toast content="Checking for vulnerabilities asynchronously, check back later to see the results" onDismiss={toggleActive} />
     ) : null;
 
 

@@ -10,7 +10,6 @@ import {
     DisplayText,
     TextContainer,
     Page,
-    Badge
 } from "@shopify/polaris";
 import Topbar from "../../components/topbar";
 import Footer from "../../components/footer";
@@ -26,10 +25,18 @@ import greg from '../../assets/people/greg.jpg';
 const TopBarWrapper = styled.div`
   position: fixed;
   width: 100%;
+  z-index: 100
 `;
 
 const Container = styled.div`
-margin-top: 20vh;
+margin-top: 10vh;
+@media only screen and (max-width: 768px){
+  margin-top: 20vh;
+  padding: 1vw;
+  text-align: center;
+  width: 100%;
+  align: center;
+}
 `
 
 function Person({img, name}: {img: string, name: string}) {
@@ -49,22 +56,22 @@ function About() {
             <Topbar />
         </TopBarWrapper>
         <Page>
-        <Stack alignment="center" vertical>
-          <Container>
-            <TextContainer>
-              <DisplayText>
-                Motivation
-              </DisplayText>
-              <DisplayText size="small">
-                With the adoption of Internet of Things (IoT) devices continuously increasing, so are the number of attacks. This puts safety critical systems and user information at risk. <br />
-                Therefore, it is increasingly important that companies seek solutions to secure their devices. Many companies want to prioritize developing features that impact their customers. That puts the security of their devices second, which is where Soteria comes in by offering a solution as a service.
-              </DisplayText>
-            </TextContainer>
-          </Container>
-        </Stack>
-        <VerticalTimeline>
+          <Stack alignment="center" vertical>
+            <Container>
+              <TextContainer>
+                <DisplayText>
+                  Motivation
+                </DisplayText>
+                <DisplayText size="small">
+                  With the adoption of Internet of Things (IoT) devices continuously increasing, so are the number of attacks. This puts safety critical systems and user information at risk. <br />
+                  Therefore, it is increasingly important that companies seek solutions to secure their devices. Many companies want to prioritize developing features that impact their customers. That puts the security of their devices second, which is where Soteria comes in by offering a solution as a service.
+                </DisplayText>
+              </TextContainer>
+            </Container>
+          </Stack>
+          <VerticalTimeline>
               <VerticalTimelineElement
-                contentStyle={{ background: 'rgba(95, 92, 238, 1)', color: '#fff' }}
+                contentStyle={{ marginTop: "10vh", background: 'rgba(95, 92, 238, 1)', color: '#fff' }}
                 contentArrowStyle={{ borderRight: '7px solid  rgba(95, 92, 238, 1)' }}
                 iconStyle={{ background: 'rgba(95, 92, 238, 1)', color: '#fff' }}
               >
@@ -121,24 +128,24 @@ function About() {
                 </p>
               </VerticalTimelineElement>
 
-        </VerticalTimeline>
-        <Stack alignment="center" wrap={false} spacing="extraTight">
-          <Container>
-            <DisplayText>
-              Meet the team
-            </DisplayText>
-            <Stack alignment="center" distribution="center">
-              <Person img={aditya} name="Aditya Arora"/>
-              <Person img={greg} name="Gregory Ho"/>
-              <Person img={rohail} name="Rohail Kabani"/>
-            </Stack>
-            <Stack alignment="center" distribution="center">
-              <Person img={matt} name="Matt Bonnell"/>
-              <Person img={kai} name="Kai Huang"/>
-              <Person img={dan} name="Daniel McCormick"/>
-            </Stack>
-          </Container>
-        </Stack>
+          </VerticalTimeline>
+          <Stack alignment="center" wrap={false} spacing="extraTight">
+            <Container>
+              <DisplayText>
+                Meet the team
+              </DisplayText>
+              <Stack alignment="center" distribution="center">
+                <Person img={aditya} name="Aditya Arora"/>
+                <Person img={greg} name="Gregory Ho"/>
+                <Person img={rohail} name="Rohail Kabani"/>
+              </Stack>
+              <Stack alignment="center" distribution="center">
+                <Person img={matt} name="Matt Bonnell"/>
+                <Person img={kai} name="Kai Huang"/>
+                <Person img={dan} name="Daniel McCormick"/>
+              </Stack>
+            </Container>
+          </Stack>
 
         </Page>
         
