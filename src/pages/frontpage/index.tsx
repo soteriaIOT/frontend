@@ -28,7 +28,6 @@ const TopBarWrapper = styled.div`
 const BannerVideo = styled.video`
   min-width: 100%;
   min-height: 90vh;
-  // width: 100vw;
   object-fit: cover;
 
   .Polaris-Stack {
