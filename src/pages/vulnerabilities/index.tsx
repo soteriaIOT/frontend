@@ -58,7 +58,7 @@ function Vulnerabilities() {
     const [queryValue, setQueryValue] = useState('');
     const [filteredItems, setFilteredItems] = useState<VulnerabilityItem[]>([]);
 
-    let { loading, error, data } = useQuery(gql`
+    let { loading, error, data, refetch } = useQuery(gql`
       query {
         vulnerabilities {
           id
@@ -73,20 +73,21 @@ function Vulnerabilities() {
           devices_affected {
             id
           }
-        } 
+        }
       }
     `);
 
     const [updateVulnerabilitiesMutation, {}] = useMutation(gql`mutation UpdateVulnerabilities($ids: [ID!]!){
       updateVulnerabilities(input:$ids){
         id
-        name 
+        name
         dependency {
           name
         }
-      }
+      },
     }
-    `);
+    `, {
+    });
 
     useEffect(() => {
         if (data) {
@@ -166,11 +167,14 @@ function Vulnerabilities() {
     const promotedBulkActions = [
       {
         content: 'Update vulnerabilities',
-        onAction: () => updateVulnerabilitiesMutation({
-          variables: {
-            ids:selectedItems,
-          },
-        })
+        onAction: () => {
+          updateVulnerabilitiesMutation({
+            variables: {
+              ids:selectedItems,
+            },
+          })
+          refetch()
+        }
       },
     ]
 
