@@ -23,6 +23,7 @@ import orchImage from "../../assets/orch.png";
 const TopBarWrapper = styled.div`
   position: fixed;
   width: 100%;
+  z-index: 100;
 `;
 
 const BannerVideo = styled.video`
