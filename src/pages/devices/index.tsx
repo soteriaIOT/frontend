@@ -205,11 +205,21 @@ function Devices() {
     );
 
     function renderItem(item: DeviceItem) {
-      const {id, url, name, vulnerabilitiesAffecting, status, vulnerabilityItems} = item;
+      const {id, url, name, vulnerabilitiesAffecting, status, vulnerabilityItems, dependencies} = item;
       const media = <Icon source={CircleAlertMajor} color={status == DeviceStatus.Error ? "critical" : (status == DeviceStatus.Warning ? "warning" : "success")} backdrop/>;
-      const description = <Fragment><p>Current device vulns.</p>{vulnerabilityItems.map((vulnerability: VulnerabilityItem) => {
-        return <p key={vulnerability.summary}><TextStyle variation="strong">{vulnerability.name}</TextStyle> with {vulnerability.summary}</p> 
-      })}</Fragment>;
+      const description = <>
+        <Fragment>
+          <p><TextStyle variation="strong">Dependencies.</TextStyle></p>
+          {dependencies.map((dependency: Dependency) => <p key={dependency.name}>{dependency.name}=={dependency.version}</p>)}
+        </Fragment>
+        <br />
+        <Fragment>
+          <p><TextStyle variation="strong">Current device vulns.</TextStyle></p>
+          {vulnerabilityItems.map((vulnerability: VulnerabilityItem) => {
+          return <p key={vulnerability.summary}><TextStyle variation="code">{vulnerability.name}</TextStyle> with {vulnerability.summary}</p> 
+          })}
+        </Fragment>
+      </>;
       return (
         <ResourceItem
           id={String(id)}

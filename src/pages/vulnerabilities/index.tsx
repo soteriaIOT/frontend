@@ -2,9 +2,9 @@ import React, {useState, useCallback, useEffect} from 'react';
 
 import styled from 'styled-components'
 
-import {Page, Card, ResourceList, ResourceItem, TextStyle, Select, Filters, ResourceListSelectedItems, Tooltip, Stack, EmptyState} from '@shopify/polaris';
+import {Page, Card, ResourceList, ResourceItem, TextStyle, Select, Filters, ResourceListSelectedItems, Tooltip, Stack, EmptyState, Toast} from '@shopify/polaris';
 import {Icon} from '@shopify/polaris';
-import {CircleAlertMajor, InfoMinor} from '@shopify/polaris-icons';
+import {CircleAlertMajor} from '@shopify/polaris-icons';
 
 import {gql, useQuery, useMutation} from '@apollo/client';
 
@@ -65,6 +65,14 @@ function Vulnerabilities() {
     const [queryValue, setQueryValue] = useState('');
     const [filteredItems, setFilteredItems] = useState<VulnerabilityItem[]>([]);
     const [isUpdating, setIsUpdating] = useState(false);
+
+    const [activeToast, setActiveToast] = useState(false);
+
+    const toggleActiveToast = useCallback(() => setActiveToast((active) => !active), []);
+
+    const toastMarkup = activeToast ? (
+      <Toast content="Update dispatched, check the Devices tab in a few minutes to see the updated dependencies" onDismiss={toggleActiveToast} />
+    ) : null;
 
     let { loading, error, data, refetch } = useQuery(gql`
       query {
@@ -186,6 +194,7 @@ function Vulnerabilities() {
           })
           await refetch();
           setSelectedItems([]);
+          setActiveToast(true)
           setIsUpdating(false);
         }
       },
@@ -261,11 +270,11 @@ function Vulnerabilities() {
     return (
     <NavigationFrame>
         <Page title="Vulnerabilties">
-
-        <Card>
+          <Card>
             <ResourceList
               resourceName={resourceName}
               items={filteredItems}
+              loading={isUpdating}
               isFiltered={filteredItems.length != items.length}
               renderItem={renderItem}
               emptyState={emptyStateMarkup}
@@ -283,7 +292,8 @@ function Vulnerabilities() {
               filterControl={filterControl}
               resolveItemId={resolveItemIds}
             />
-        </Card>
+          </Card>
+          {toastMarkup}
         </Page>
     </NavigationFrame>
 
