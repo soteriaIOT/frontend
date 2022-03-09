@@ -26,10 +26,14 @@ interface CreateToken {
 const AuthContext = createContext<AuthContextType>(null!);
 
 export default function AuthProvider({ children }: { children: React.ReactNode }) {
-    let [token, setToken] = useState<string | null>(null);
+    let [token, setToken] = useState<string | null>("");
 
     useEffect(() => {
-        if (token) {
+       setToken(localStorage.getItem('token'));
+    }, []);
+
+    useEffect(() => {
+        if (token && token != localStorage.getItem('token')) {
             localStorage.setItem('token', token);
         }
     }, [token]);
@@ -62,7 +66,7 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
                     password
                 }
             })
-        setToken((data as LoginToken).login.token);
+            setToken((data as LoginToken).login.token);
         } catch {
             return false;
         }

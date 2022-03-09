@@ -23,6 +23,7 @@ import orchImage from "../../assets/orch.png";
 const TopBarWrapper = styled.div`
   position: fixed;
   width: 100%;
+  z-index: 100;
 `;
 
 const BannerVideo = styled.video`
@@ -38,16 +39,15 @@ const BannerVideo = styled.video`
   @media only screen and (max-width: 768px){
     max-width: auto;
   }
-
-  margin-bottom: -30vh;
 `
 
 const TranslateUp = styled.div`
   .Polaris-Stack {
     position: relative;
-    top: -35vh;
     width: 80%;
+    transform: translateY(-60vh);
     margin: auto;
+    margin-bottom: -20vh;
   }
 `
 
@@ -167,9 +167,9 @@ function Frontpage() {
               <Topbar />
           </TopBarWrapper>
           <TranslateUp>
-          <BannerVideo autoPlay muted loop>
-            <source src={network} type="video/mp4" />
-          </BannerVideo>
+            <BannerVideo autoPlay muted loop>
+              <source src={network} type="video/mp4" />
+            </BannerVideo>
             <Stack alignment="center" distribution="leading">
                 <WhiteText>
                     <BannerHeader>See. Know. Secure.</BannerHeader>

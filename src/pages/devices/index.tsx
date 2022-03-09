@@ -6,6 +6,7 @@ import {Page, Card, ResourceList, ResourceItem, TextStyle, Filters, ResourceList
 import {Icon} from '@shopify/polaris';
 import {CircleAlertMajor} from '@shopify/polaris-icons';
 
+
 import {gql, useQuery} from '@apollo/client';
 
 import loadingD from '../../assets/loading_devices.png';
@@ -24,6 +25,12 @@ interface Dependency {
   version: string;
 }
 
+interface VulnerabilityItem {
+  name: string;
+  summary: string;
+}
+
+
 interface DeviceItem {
     id: string;
     url: string;
@@ -31,6 +38,7 @@ interface DeviceItem {
     status: DeviceStatus;
     dependencies: Dependency[];
     vulnerabilitiesAffecting: number;
+    vulnerabilityItems: VulnerabilityItem[];
 }
 
 
@@ -45,7 +53,7 @@ function Devices() {
     const toggleActive = useCallback(() => setActive((active) => !active), []);
 
     const toastMarkup = active ? (
-      <Toast content="Checking for vulnerabilities message, check back later to see the results" onDismiss={toggleActive} />
+      <Toast content="Checking for vulnerabilities asynchronously, check back later to see the results" onDismiss={toggleActive} />
     ) : null;
 
 
@@ -59,6 +67,8 @@ function Devices() {
             version
           }
           vulnerabilities {
+            name
+            summary
             dependency {
               name
             }
@@ -76,6 +86,7 @@ function Devices() {
                 url: `/dashboard/${item.id}`,
                 dependencies: item.dependencies,
                 vulnerabilitiesAffecting: item.vulnerabilities.length,
+                vulnerabilityItems: item.vulnerabilities,
                 status: item.vulnerabilities.length == 0 ? DeviceStatus.Normal : item.vulnerabilities.length < 2 ? DeviceStatus.Warning : DeviceStatus.Error,
               }
             });
@@ -194,11 +205,21 @@ function Devices() {
     );
 
     function renderItem(item: DeviceItem) {
-      const {id, url, name, vulnerabilitiesAffecting, status, dependencies} = item;
+      const {id, url, name, vulnerabilitiesAffecting, status, vulnerabilityItems, dependencies} = item;
       const media = <Icon source={CircleAlertMajor} color={status == DeviceStatus.Error ? "critical" : (status == DeviceStatus.Warning ? "warning" : "success")} backdrop/>;
-      const description = <Fragment><p>Current device deps.</p>{dependencies.map((item: Dependency) => {
-        return <p>{item.name}=={item.version}</p> 
-      })}</Fragment>;
+      const description = <>
+        <Fragment>
+          <p><TextStyle variation="strong">Dependencies.</TextStyle></p>
+          {dependencies.map((dependency: Dependency) => <p key={dependency.name}>{dependency.name}=={dependency.version}</p>)}
+        </Fragment>
+        <br />
+        <Fragment>
+          <p><TextStyle variation="strong">Current device vulns.</TextStyle></p>
+          {vulnerabilityItems.map((vulnerability: VulnerabilityItem) => {
+          return <p key={vulnerability.summary}><TextStyle variation="code">{vulnerability.name}</TextStyle> with {vulnerability.summary}</p> 
+          })}
+        </Fragment>
+      </>;
       return (
         <ResourceItem
           id={String(id)}
