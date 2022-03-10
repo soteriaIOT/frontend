@@ -20,6 +20,7 @@ import matt from '../../assets/people/matt.jpg';
 import dan from '../../assets/people/dan.jpg';
 import kai from '../../assets/people/kai.jpg';
 import greg from '../../assets/people/greg.jpg';
+import ravi from '../../assets/people/ravi.png';
 
 
 const TopBarWrapper = styled.div`
@@ -143,6 +144,12 @@ function About() {
                 <Person img={matt} name="Matt Bonnell"/>
                 <Person img={kai} name="Kai Huang"/>
                 <Person img={dan} name="Daniel McCormick"/>
+              </Stack>
+              <Stack vertical alignment="center" distribution="center">
+                <DisplayText>
+                  Under the guidance of
+                </DisplayText>
+                <Person img={ravi} name="Prof. Ravi Mazumdar"/>
               </Stack>
             </Container>
           </Stack>

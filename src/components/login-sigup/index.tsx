@@ -42,8 +42,6 @@ export default function LoginSignup({
         setSubmitted(false);
       }
     } else {
-      setSubmitted(false);
-      return;
       if(await auth.signup(name, email, password)){
 
         setSubmitted(false);
